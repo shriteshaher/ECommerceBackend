@@ -1,0 +1,36 @@
+
+version: '3.8'
+services:
+  seller_db:
+    image: mysql:8.0
+    cap_add:
+      - SYS_NICE
+    restart: always
+    environment:
+      - MYSQL_DATABASE=seller
+      - MYSQL_ROOT_PASSWORD=shritesh123
+    ports:
+      - '3307:3306'
+    volumes:
+      - db:/var/lib/mysql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+  api:
+    container_name: seller_app
+    build: .
+    depends_on:
+      - seller_db
+    ports:
+      - 8000:8000
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: shritesh123
+      DB_NAME: seller
+    links:
+      - seller_db
+    volumes:
+      - ./:/src
+volumes:
+  db:
+    driver: local
