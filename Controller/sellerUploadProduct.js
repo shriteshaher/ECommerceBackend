@@ -3,6 +3,7 @@ const router=express.Router()
 const Seller_Product=require('../model/sellUploadProduct');
 const auth=require('../middleware/auth')
 const products=require('../model/Products');
+const redisConnection=require('.././redis/redisClientConfig')
 
 //Seller Upload Product
 
@@ -19,9 +20,33 @@ router.post('/seller-upload-product',auth,(req,res)=>{
 
 //get Products Details
 router.get('/getProducts',(req,res)=>{
-  products.findAll().then((result)=>{
-    return res.status(200).json(result)
+    redisConnection.get("products").then((result)=>{
+    // let res1=JSON.parse(result)
+    // console.log()
+    if(result){
+     
+      return res.status(200).json(JSON.parse(result))
+    }
+    else{
+      products.findAll().then((result)=>{
+        // return res.status(200).json(result)
+        let result1 =JSON.stringify(result)
+         
+        redisConnection.set("products",result1,(err, value)=>{
+             console.log(value)
+            
+        })
+        return res.status(200).json(result)
+      })
+    }
   })
+
+
+  
+  
+
+
+  return
     
 
 })
