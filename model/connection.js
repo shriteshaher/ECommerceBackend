@@ -1,8 +1,8 @@
 const Sequelize=require('sequelize')
 
-const mysql=new Sequelize('ecommerce',process.env.MYSQLUSER,process.env.MYSQLPASSWORD,{
+const mysql=new Sequelize('ecommerce',"admin","shritesh123",{
     dialect: 'mysql',
-    host:process.env.HOST,
+    host:"ecommerce.c601l9td3cls.ap-south-1.rds.amazonaws.com",
  
  
 })
